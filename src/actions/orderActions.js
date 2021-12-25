@@ -187,7 +187,8 @@ export const listOngoingOrders = () => async (dispatch, getState) => {
     };
 
     const { data } = await axios.get(
-      `${URL}/admin/orders-by-date?date=${new Date().toISOString()}`,
+      // `${URL}/admin/orders-by-date?date=${new Date().toISOString()}`,
+      `${URL}/admin/orders`,
       config
     );
 

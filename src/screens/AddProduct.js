@@ -48,7 +48,6 @@ const AddProduct = ({ match, history }) => {
       value: item.itemId,
     };
   });
-  
 
   // handle onChange event of the itemIds
   const handleitems = (e) => {
@@ -103,14 +102,6 @@ const AddProduct = ({ match, history }) => {
     formData.append("category", category);
     formData.append("availability", availability);
     formData.append("vegOrNonveg", vegOrNonveg);
-
-    for (var value of formData.values()) {
-      console.log(value);
-    }
-
-    for (var key of formData.keys()) {
-      console.log(key);
-    }
 
     dispatch(createProduct(formData));
   };

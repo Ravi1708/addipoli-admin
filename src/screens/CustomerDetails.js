@@ -4,7 +4,7 @@ import { Button, Table, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Spinner";
-import { deleteUser, listUsers } from "../actions/userActions";
+import { deleteUser, listUsers, logout } from "../actions/userActions";
 import {
   MDBDataTable,
   MDBTable,
@@ -30,6 +30,9 @@ const CustomerDetails = ({ match, history }) => {
       dispatch(listUsers());
     } else {
       history.push("/login");
+    }
+    if (error == "Forbidden resource") {
+      dispatch(logout);
     }
   }, [dispatch, successDelete, history, userInfo]);
 
@@ -102,11 +105,7 @@ const CustomerDetails = ({ match, history }) => {
                   <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
                 </svg>
               </a> */}
-              <a
-                role="button"
-                className="btn btn-circle btn-danger"
-                href="#"
-              >
+              <a role="button" className="btn btn-circle btn-danger" href="#">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"

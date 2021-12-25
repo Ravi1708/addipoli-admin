@@ -18,6 +18,7 @@ import {
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
 import { deletehub, listhubs } from "../actions/hubActions";
+import { logout } from "../actions/userActions";
 
 const HubDetails = ({ match, history }) => {
   const dispatch = useDispatch();
@@ -54,6 +55,10 @@ const HubDetails = ({ match, history }) => {
     //   dispatch(listProducts());
     // }
     dispatch(listhubs());
+
+    if (error == "Forbidden resource") {
+      dispatch(logout);
+    }
   }, [
     dispatch,
     history,
@@ -99,7 +104,12 @@ const HubDetails = ({ match, history }) => {
         sort: "asc",
         width: 100,
       },
-
+      {
+        label: "Location",
+        field: "location",
+        sort: "asc",
+        width: 100,
+      },
       {
         label: "Action",
         field: "action",
@@ -116,12 +126,20 @@ const HubDetails = ({ match, history }) => {
             hubId: hub.hubId,
             inchargeName: hub.inchargeName,
             InchargeNumber: hub.inchargeNumber,
+            location: (
+              <a
+                href={`http://www.google.com/maps/place/${hub.latitude},${hub.longitude}`}
+                target="_blank"
+              >
+                click here to view location
+              </a>
+            ),
             action: (
               <>
                 <LinkContainer
                   role="button"
                   className=" btn btn-circle btn-success"
-                  to={`/editdeliverypartner/${hub.hubId}`}
+                  to={`/edithub/${hub.hubId}`}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -18,6 +18,7 @@ import {
   MDBDataTableV5,
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
+import { logout } from "../actions/userActions";
 
 const ProductList = ({ match }) => {
   let history = useHistory();
@@ -51,6 +52,9 @@ const ProductList = ({ match }) => {
       history.push("/login");
     } else {
       dispatch(listProducts());
+    }
+    if (error == "Forbidden resource") {
+      dispatch(logout);
     }
   }, [
     dispatch,

@@ -92,7 +92,7 @@ const App = () => {
             <Route path="/editproduct/:id" component={EditProduct} />
             <Route path="/combo" component={ComboList} />
             <Route path="/addcombo" component={AddCombo} />
-            <Route path="/editcombo" component={EditCombo} />
+            <Route path="/editcombo/:id" component={EditCombo} />
             <Route path="/coupon" component={CouponList} />
             <Route path="/addcoupon" component={AddCoupon} />
             <Route path="/editcoupon" component={EditCoupon} />

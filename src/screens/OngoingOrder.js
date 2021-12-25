@@ -14,6 +14,7 @@ import {
   MDBDataTableV5,
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
+import { logout } from "../actions/userActions";
 
 const OngoingOrder = ({ match }) => {
   let history = useHistory();
@@ -47,6 +48,9 @@ const OngoingOrder = ({ match }) => {
       dispatch(listOngoingOrders());
     }, 60000);
     return () => clearInterval(interval);
+    if (error == "Forbidden resource") {
+      dispatch(logout);
+    }
   }, [dispatch, history, userInfo]);
 
   const deleteHandler = (id) => {
@@ -101,6 +105,7 @@ const OngoingOrder = ({ match }) => {
       ? orders
           .filter((filteredorders) => filteredorders.orderStatus === "Ongoing")
           .map((order, index) => {
+            console.log(order);
             return {
               index: index + 1,
               orderId: order.orderId,

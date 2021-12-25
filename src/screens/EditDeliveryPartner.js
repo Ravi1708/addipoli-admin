@@ -15,7 +15,7 @@ const EditDeliveryPartner = ({ history, match }) => {
   const [InchargeNumber, setInchargeNumber] = useState();
   const [location, setlocation] = useState();
   const [partnerIncharge, setpartnerIncharge] = useState();
-  const [pincode, setpincode] = useState("641035");
+  const [pincode, setpincode] = useState();
 
   const dispatch = useDispatch();
 
@@ -59,6 +59,7 @@ const EditDeliveryPartner = ({ history, match }) => {
       })
     );
   };
+  
 
   return (
     <div>

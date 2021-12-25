@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,6 +19,7 @@ const AddHub = ({ history }) => {
   const [city, setcity] = useState();
   const [currentPosition, setCurrentPosition] = useState({});
   const [states, setstates] = useState();
+  const [pincode, setpincode] = useState();
   const [country, setcountry] = useState();
   const [address, setaddress] = useState();
   const [password, setpassword] = useState();
@@ -66,7 +67,7 @@ const AddHub = ({ history }) => {
         street: address,
         district: city,
         state: city,
-        pincode: "123456",
+        pincode,
         longitude,
         hubIncharge: inchargeName,
         InchargeNumber: inchargeNumber,
@@ -92,7 +93,7 @@ const AddHub = ({ history }) => {
       (response) => {
         const address = response.results[0].formatted_address;
         setaddress(address);
-        let city, state, country;
+        let city, state, country, pincode;
         for (
           let i = 0;
           i < response.results[0].address_components.length;
@@ -112,6 +113,9 @@ const AddHub = ({ history }) => {
                 state = response.results[0].address_components[i].long_name;
                 setstates(state);
                 break;
+              case "postal_code":
+                pincode = response.results[0].address_components[i].long_name;
+                setpincode(pincode);
               case "country":
                 country = response.results[0].address_components[i].long_name;
                 setcountry(country);
@@ -313,14 +317,23 @@ const AddHub = ({ history }) => {
                             <div className="form-group">
                               <label className="form-label">Map Location</label>
                               <LoadScript googleMapsApiKey="AIzaSyCdIB4G6_XT06RkDrqF1IUZpuzRp0vWLr4">
-                                <button
-                                  type="button"
-                                  class="btn btn-primary"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#exampleModal"
-                                >
-                                  choose locaton
-                                </button>
+                                <div style={{ display: "flex" }}>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal"
+                                  >
+                                    choose locaton
+                                  </button>
+                                  <input
+                                    type="text"
+                                    className="form-control form-select"
+                                    placeholder={address}
+                                    value={address}
+                                    disabled="true"
+                                  />
+                                </div>
                                 {/* <!-- Modal --> */}
                                 <div
                                   class="modal fade"

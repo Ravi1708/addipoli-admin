@@ -5,18 +5,33 @@ import { Form, Button, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Spinner";
-import { listProductDetails, updateProduct } from "../actions/productActions";
+import {
+  listitems,
+  listProductDetails,
+  updateProduct,
+} from "../actions/productActions";
 import { FormContainer } from "../components/FormContainer";
+import Select from "react-select";
 
 const EditProduct = ({ match, history }) => {
-  const productId = match.params.id;
+  const productid = match.params.id;
+
   const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [image, setImage] = useState("");
-  const [category, setCategory] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [itemIds, setitemIds] = useState([]);
+  const [ProductId, setProductId] = useState();
+  const [websitePrice, setwebsitePrice] = useState();
+  const [HubPrice, setHubPrice] = useState();
+  const [adminPrice, setadminPrice] = useState();
+  const [category, setcategory] = useState();
+  const [image, setImage] = useState();
+  const [availability, setavailability] = useState();
+  const [vegOrNonveg, setvegOrNonveg] = useState();
+  const [uploading, setuploading] = useState();
 
   const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const productDetails = useSelector((state) => state.productDetails);
   const { loading, error, product } = productDetails;
@@ -29,57 +44,89 @@ const EditProduct = ({ match, history }) => {
     success: successUpdate,
   } = productUpdate;
 
+  const listitem = useSelector((state) => state.itemList);
+  const { loading: loadingitems, error: erroritems, items } = listitem;
+
+  const itemsavail = items.map((item) => {
+    return {
+      label: item.itemName,
+      value: item.itemId,
+    };
+  });
+
+  // // handle onChange event of the itemIds
+  // const handleitems = (e) => {
+  //   setitemIds(Array.isArray(e) ? e.map((x) => x.value) : []);
+  // };
+
   useEffect(() => {
+    dispatch(listitems());
     if (successUpdate) {
       history.push("/product");
     } else {
-      if (!product.name || product._id !== productId) {
-        dispatch(listProductDetails(productId));
+      if (product._id != productid) {
+        dispatch(listProductDetails(productid));
       } else {
+        console.log(product.itemIds);
+        setProductId(product._id);
         setName(product.name);
-        setPrice(product.price);
-        setImage(product.image);
-        setCategory(product.category);
+        setwebsitePrice(product.websitePrice);
+        setHubPrice(product.hubPrice);
+        setadminPrice(product.adminPrice);
+        setcategory(product.category);
+        setavailability(product.availability);
+        setvegOrNonveg(product.vegOrNonveg);
+        setitemIds(
+          product.items
+            .reduce((prev, curr) => (prev += curr.itemId + ","), "")
+            .slice(0, -1)
+        );
       }
     }
-  }, [dispatch, history, productId, product, successUpdate]);
+  }, [dispatch, history, product, productid, successUpdate]);
 
-  const uploadFileHandler = async (e) => {
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("image", file);
-    setUploading(true);
-    console.log(formData);
-    try {
-      const config = {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      };
+  // const uploadFileHandler = async (e) => {
+  //   const file = e.target.files[0];
 
-      const { data } = await axios.post(
-        "http://api.addipoli.primespot.tech/api/upload",
-        formData,
-        config
-      );
+  //   formData.append("file", file);
 
-      setImage(`/uploads/${data}`);
-      setUploading(false);
-    } catch (error) {
-      console.error(error);
-      setUploading(false);
-    }
-  };
+  //   // setUploading(true);
+  //   try {
+  //     const config = {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //         "x-access-token": `${userInfo.accessToken}`,
+  //       },
+  //     };
+
+  //     const { data } = await axios.post(
+  //       "http://api.addipoli-puttus.com/admin/product",
+  //       formData,
+  //       config
+  //     );
+
+  //     // setImage(`/uploads/${data}`);
+  //     // setUploading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     // setUploading(false);
+  //   }
+  // };
 
   const submitHandler = (e) => {
     e.preventDefault();
+
     dispatch(
       updateProduct({
-        _id: productId,
         name,
-        price,
-        image,
+        itemIds,
+        ProductId,
+        websitePrice,
+        HubPrice,
+        adminPrice,
         category,
+        availability,
+        vegOrNonveg,
       })
     );
   };
@@ -126,7 +173,7 @@ const EditProduct = ({ match, history }) => {
                 <div className="card">
                   <form onSubmit={submitHandler}>
                     <div className="card-body">
-                      <h3 className="card-title">Edit Product Info</h3>
+                      <h3 className="card-title">Add Product Info</h3>
                     </div>
                     <hr />
                     <div className="form-body">
@@ -139,8 +186,10 @@ const EditProduct = ({ match, history }) => {
                                 type="text"
                                 id="firstName"
                                 className="form-control form-select"
+                                placeholder="Enter product ID"
+                                value={ProductId}
+                                onChange={(e) => setProductId(e.target.value)}
                                 disabled
-                                value={productId}
                               />
                             </div>
                           </div>
@@ -157,103 +206,125 @@ const EditProduct = ({ match, history }) => {
                               />
                             </div>
                           </div>
-                          <div className="col-md-6">
-                              <div className="form-group">
+                          {/* <div className="col-md-6">
+                            <div className="form-group">
                               <label className="form-label">Product Item</label>
-                              <select  className="form-control form-select" data-placeholder="Choose a Item" tabindex="1" >
-                                  <option value="#" > Choose a Categories </option>
-                                  <option value="#">Puttu</option>
-                                  <option value="#">Egg Masala</option>                                                            
-                              </select>
-                              </div>
-                          </div>
+                              <Select
+                                className="dropdown"
+                                placeholder="Select Option"
+                                value={itemsavail.filter((obj) =>
+                                  itemIds.includes(obj.value)
+                                )}
+                                options={itemsavail} // set list of the data
+                                onChange={handleitems} // assign onChange function
+                                isMulti
+                                isClearable
+                              />
+                            </div>
+                          </div> */}
                           <div className="col-md-6">
-                              <div className="form-group">
+                            <div className="form-group">
                               <label className="form-label">Veg/Non-Veg</label>
-                              <select  className="form-control form-select" data-placeholder="Choose a Veg/Non-Veg" tabindex="1" >
-                                  <option value="#" > Choose a Categories </option>
-                                  <option value="Veg">Veg</option>
-                                  <option value="Non-Veg">Non-Veg</option>                                                            
+                              <select
+                                className="form-control form-select"
+                                data-placeholder="Choose a Veg/Non-Veg"
+                                tabindex="1"
+                                value={vegOrNonveg}
+                                onChange={(e) => setvegOrNonveg(e.target.value)}
+                              >
+                                <option value=" "> Choose a Categories </option>
+                                <option value="Vegeterian">Veg</option>
+                                <option value="Non-vegeterian">Non-Veg</option>
                               </select>
-                              </div>
+                            </div>
                           </div>
                           <div className="col-md-6">
                             <div className="form-group">
-                              <label className="form-label">Addipoli Categories</label>
+                              <label className="form-label">
+                                Addipoli Categories
+                              </label>
                               <select
                                 className="form-control form-select"
                                 data-placeholder="Choose a Delivery Partner"
                                 tabindex="1"
+                                value={category}
+                                onChange={(e) => setcategory(e.target.value)}
                               >
-                                <option
-                                  value="#"
-                                  onChange={(e) => setCategory(e.target.value)}
-                                >
-                                  Choose a Categories
+                                <option>Choose a Categories</option>
+                                <option value="Addipoli Puttus">
+                                  Addipoli Puttu
                                 </option>
-                                <option value="Item1">Addipoli Puttu</option>
-                                <option value="Item2">Addipoli Curry</option>
-                                <option value="Item3">Addipoli Wrappies</option>
-                                <option value="Item4">Others</option>
+
+                                <option value="Addipoli Wrappies">
+                                  Addipoli Wrappies
+                                </option>
+                                <option value="Addipoli Dishes">
+                                  Addipoli Curry
+                                </option>
+                                <option value="Others">Others</option>
                               </select>
                             </div>
-                          </div> 
-                          <div className="col-md-6">
-                              <div className="form-group">
-                              <label className="form-label">Product Available/unavailable</label>
-                              <select  className="form-control form-select" data-placeholder="Choose a Product Available/unavailable" tabindex="1" >
-                                  <option value="#">Available</option>
-                                  <option value="#">Unavailable</option>                                                            
-                              </select>
-                              </div>
-                          </div>                                                             
+                          </div>
                           <div className="col-md-6">
                             <div className="form-group">
                               <label className="form-label">
-                              customer Price (website)
+                                Product Available/unavailable
+                              </label>
+                              <select
+                                className="form-control form-select"
+                                data-placeholder="Choose a Product Available/unavailable"
+                                tabindex="1"
+                                value={availability}
+                                onChange={(e) =>
+                                  setavailability(e.target.value)
+                                }
+                              >
+                                <option value="Available">Available</option>
+                                <option value="Unavailable">Unavailable</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label className="form-label">
+                                customer Price (website)
                               </label>
                               <input
                                 type="text"
                                 id="firstName"
                                 className="form-control form-select"
-                                value={price}
-                                onChange={(e) => setPrice(e.target.value)}
+                                value={websitePrice}
+                                onChange={(e) =>
+                                  setwebsitePrice(e.target.value)
+                                }
                                 placeholder="Enter Price customer Price (website)"
                               />
                             </div>
                           </div>
                           <div className="col-md-6">
-                              <div className="form-group">
-                                  <label className="form-label">Hub Price</label>
-                                  <input type="text" id="firstName" className="form-control form-select" placeholder="Enter your Hub price" />
-                              </div>
-                          </div>
-                          <div className="col-md-6">
-                              <div className="form-group">
-                                  <label className="form-label">Admin Price</label>
-                                  <input type="text" id="firstName" className="form-control form-select" placeholder="Enter your admin price" />
-                              </div>
-                          </div>     
-                          <div className="col-md-6">
-                            <div control-id="image" className="form-group">
-                              <label className="form-label">
-                                Product Picture upload
-                              </label>
+                            <div className="form-group">
+                              <label className="form-label">Hub Price</label>
                               <input
                                 type="text"
-                                value={image}
-                                onChange={(e) => setImage(e.target.value)}
+                                id="firstName"
                                 className="form-control form-select"
+                                placeholder="Enter your Hub price"
+                                value={HubPrice}
+                                onChange={(e) => setHubPrice(e.target.value)}
                               />
+                            </div>
+                          </div>
+                          <div className="col-md-6">
+                            <div className="form-group">
+                              <label className="form-label">Admin Price</label>
                               <input
-                                type="file"
-                                id="image-file"
-                                custom
-                                onChange={uploadFileHandler}
-                                label="choose File"
-                                className="form-control"
+                                type="text"
+                                id="firstName"
+                                className="form-control form-select"
+                                placeholder="Enter your admin price"
+                                value={adminPrice}
+                                onChange={(e) => setadminPrice(e.target.value)}
                               />
-                              {uploading && <Loader />}
                             </div>
                           </div>
                         </div>

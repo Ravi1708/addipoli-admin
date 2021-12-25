@@ -46,6 +46,8 @@ export const listhubs = () => async (dispatch, getState) => {
       userLogin: { userInfo },
     } = getState();
 
+    console.log(userInfo.accessToken);
+
     const config = {
       headers: {
         "content-Type": "application/json",
@@ -86,7 +88,7 @@ export const listhubDetails = (id) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.get(`${URL}/api/hubs/${id}`);
+    const { data } = await axios.get(`${URL}/admin/hub/${id}`, config);
 
     dispatch({
       type: HUB_DETAILS_SUCCESS,
@@ -175,7 +177,7 @@ export const createhub =
 
 //---------------------------update hub ------------------------------
 
-export const updatehub = (hub) => async (dispatch, getState) => {
+export const updatehub = (details) => async (dispatch, getState) => {
   try {
     dispatch({
       type: HUB_UPDATE_REQUEST,
@@ -192,7 +194,7 @@ export const updatehub = (hub) => async (dispatch, getState) => {
       },
     };
 
-    const { data } = await axios.put(`${URL}/api/hubs/${hub._id}`, hub, config);
+    const { data } = await axios.put(`${URL}/admin/hub/`, details, config);
 
     dispatch({
       type: HUB_UPDATE_SUCCESS,

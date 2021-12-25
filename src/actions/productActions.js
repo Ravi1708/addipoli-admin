@@ -146,43 +146,65 @@ export const createProduct = (formData) => async (dispatch, getState) => {
 
 //---------------------------update product ------------------------------
 
-export const updateProduct = (product) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: PRODUCT_UPDATE_REQUEST,
-    });
+export const updateProduct =
+  ({
+    name,
+    itemIds,
+    ProductId,
+    websitePrice,
+    HubPrice,
+    adminPrice,
+    category,
+    availability,
+    vegOrNonveg,
+  }) =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: PRODUCT_UPDATE_REQUEST,
+      });
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
+      const {
+        userLogin: { userInfo },
+      } = getState();
 
-    const config = {
-      headers: {
-        "content-Type": "application/json",
-        "x-access-token": `${userInfo.accessToken}`,
-      },
-    };
+      const config = {
+        headers: {
+          "content-Type": "application/json",
+          "x-access-token": `${userInfo.accessToken}`,
+        },
+      };
 
-    const { data } = await axios.put(
-      `${URL}/api/products/${product._id}`,
-      product,
-      config
-    );
+      const { data } = await axios.put(
+        `${URL}/admin/product/`,
+        {
+          name,
+          itemIds,
+          ProductId,
+          websitePrice,
+          HubPrice,
+          adminPrice,
+          category,
+          availability,
+          vegOrNonveg,
+        },
+        config
+      );
 
-    dispatch({
-      type: PRODUCT_UPDATE_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: PRODUCT_UPDATE_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: PRODUCT_UPDATE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: PRODUCT_UPDATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 //---------------------------  delete product ---------------------------
 
