@@ -63,6 +63,7 @@ const EditProduct = ({ match, history }) => {
     dispatch(listitems());
     if (successUpdate) {
       history.push("/combo");
+      dispatch({ type: "PRODUCT_UPDATE_RESET" });
     }
     if (product._id != productid) {
       dispatch(listProductDetails(productid));

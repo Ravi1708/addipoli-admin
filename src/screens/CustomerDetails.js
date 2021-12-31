@@ -33,6 +33,7 @@ const CustomerDetails = ({ match, history }) => {
     }
     if (error == "Forbidden resource") {
       dispatch(logout);
+      history.push("/login");
     }
   }, [dispatch, successDelete, history, userInfo]);
 

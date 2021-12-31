@@ -12,6 +12,7 @@ import {
 } from "../actions/productActions";
 import { FormContainer } from "../components/FormContainer";
 import Select from "react-select";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const EditProduct = ({ match, history }) => {
   const productid = match.params.id;
@@ -63,6 +64,7 @@ const EditProduct = ({ match, history }) => {
     dispatch(listitems());
     if (successUpdate) {
       history.push("/product");
+      dispatch({ type: "PRODUCT_UPDATE_RESET" });
     } else {
       if (product._id != productid) {
         dispatch(listProductDetails(productid));
@@ -121,9 +123,9 @@ const EditProduct = ({ match, history }) => {
         name,
         itemIds,
         ProductId,
-        websitePrice,
-        HubPrice,
-        adminPrice,
+        websitePrice: Number(websitePrice),
+        HubPrice: Number(HubPrice),
+        adminPrice: Number(adminPrice),
         category,
         availability,
         vegOrNonveg,

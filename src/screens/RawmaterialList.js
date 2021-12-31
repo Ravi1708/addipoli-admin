@@ -47,6 +47,7 @@ const RawmaterialList = ({ match }) => {
 
     if (error == "Forbidden resource") {
       dispatch(logout);
+      history.push("/login");
     }
 
     dispatch(listitems());

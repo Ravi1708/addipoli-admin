@@ -116,6 +116,14 @@ const ViewOngoingOrder = ({ match, history }) => {
                             <th>Delivery Address</th>
                             <td>{order.orderAddress.address}</td>
                           </tr>
+                          <tr>
+                            <th>payment Method</th>
+                            <td>{order.paymentMethod}</td>
+                          </tr>
+                          <tr>
+                            <th>total Price</th>
+                            <td>{order.totalPrice}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -154,10 +162,13 @@ const ViewOngoingOrder = ({ match, history }) => {
                       </table>
                     </div>
                     <div className="row">
-                        <div className="col-12">
-                            <a href="/ongoing" type="submit" class="btn btn-dark" > Back</a>
-                        </div>
-                    </div>  
+                      <div className="col-12">
+                        <a href="/ongoing" type="submit" class="btn btn-dark">
+                          {" "}
+                          Back
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -58,6 +58,7 @@ const HubDetails = ({ match, history }) => {
 
     if (error == "Forbidden resource") {
       dispatch(logout);
+      history.push("/login");
     }
   }, [
     dispatch,

@@ -52,6 +52,7 @@ const DeliveryPartner = ({ match, history }) => {
     dispatch(listpartners());
     if (error == "Forbidden resource") {
       dispatch(logout);
+      history.push("/login");
     }
   }, [
     dispatch,

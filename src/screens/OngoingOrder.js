@@ -50,6 +50,7 @@ const OngoingOrder = ({ match }) => {
     return () => clearInterval(interval);
     if (error == "Forbidden resource") {
       dispatch(logout);
+      history.push("/login");
     }
   }, [dispatch, history, userInfo]);
 
@@ -59,6 +60,13 @@ const OngoingOrder = ({ match }) => {
 
   const createProductHandler = () => {
     // dispatch(createProduct());
+  };
+
+  const sortByDate = (arr) => {
+    const sorter = (a, b) => {
+      return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    };
+    arr.sort(sorter);
   };
 
   const tabledata = {
@@ -94,6 +102,12 @@ const OngoingOrder = ({ match }) => {
         width: 100,
       },
       {
+        label: "Date",
+        field: "createdAt",
+        sort: "asc ",
+        width: "100",
+      },
+      {
         label: "Action",
         field: "action",
         sort: "asc",
@@ -104,6 +118,9 @@ const OngoingOrder = ({ match }) => {
     rows: orders
       ? orders
           .filter((filteredorders) => filteredorders.orderStatus === "Ongoing")
+          .reverse(function (a, b) {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+          })
           .map((order, index) => {
             console.log(order);
             return {
@@ -112,6 +129,7 @@ const OngoingOrder = ({ match }) => {
               customerName: order.orderAddress.name,
               phone: order.orderAddress.phoneNumber,
               status: order.orderStatus,
+              createdAt: order.createdAt,
               action: (
                 <>
                   <NavLink
