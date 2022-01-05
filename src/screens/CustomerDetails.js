@@ -35,7 +35,7 @@ const CustomerDetails = ({ match, history }) => {
       dispatch(logout);
       history.push("/login");
     }
-  }, [dispatch, successDelete, history, userInfo]);
+  }, [dispatch, successDelete, history, userInfo, error]);
 
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure")) {

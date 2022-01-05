@@ -65,6 +65,7 @@ const ProductList = ({ match }) => {
     successCreate,
     createdProduct,
     pageNumber,
+    error,
   ]);
 
   const deleteHandler = (id) => {

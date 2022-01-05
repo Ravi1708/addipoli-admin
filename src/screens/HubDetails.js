@@ -65,6 +65,7 @@ const HubDetails = ({ match, history }) => {
     history,
     userInfo,
     successDelete,
+    error,
     // successCreate,
     // createdProduct,
   ]);
@@ -132,7 +133,7 @@ const HubDetails = ({ match, history }) => {
                 href={`http://www.google.com/maps/place/${hub.latitude},${hub.longitude}`}
                 target="_blank"
               >
-                click here to view location
+                send location to whatsapp
               </a>
             ),
             action: (

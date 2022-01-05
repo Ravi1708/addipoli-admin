@@ -14,6 +14,7 @@ import {
   MDBDataTableV5,
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
+import { logout } from "../actions/userActions";
 
 const ViewOngoingOrder = ({ match, history }) => {
   const orderID = match.params.id;
@@ -42,8 +43,16 @@ const ViewOngoingOrder = ({ match, history }) => {
   const { userInfo } = userLogin;
 
   useEffect(() => {
+    if (!userInfo) {
+      history.push("/login");
+    }
+
+    if (error == "Forbidden resource") {
+      dispatch(logout);
+      history.push("/login");
+    }
     dispatch(listOngoingOrders());
-  }, [dispatch, history, userInfo]);
+  }, [dispatch, history, userInfo, error]);
 
   const deleteHandler = (id) => {
     // dispatch(deleteProduct(id));

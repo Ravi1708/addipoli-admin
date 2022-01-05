@@ -59,6 +59,7 @@ const DeliveryPartner = ({ match, history }) => {
     history,
     userInfo,
     successDelete,
+    error,
     // successCreate,
     // createdProduct,
   ]);

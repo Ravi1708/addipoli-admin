@@ -102,6 +102,12 @@ const OngoingOrder = ({ match }) => {
         width: 100,
       },
       {
+        label: "Location",
+        field: "location",
+        sort: "asc",
+        width: 100,
+      },
+      {
         label: "Date",
         field: "createdAt",
         sort: "asc ",
@@ -129,6 +135,14 @@ const OngoingOrder = ({ match }) => {
               customerName: order.orderAddress.name,
               phone: order.orderAddress.phoneNumber,
               status: order.orderStatus,
+              location: (
+                <a
+                  href={`https://wa.me/918015256197/?text=${order.orderAddress.address}`}
+                  target="_blank"
+                >
+                  click here to view location
+                </a>
+              ),
               createdAt: order.createdAt,
               action: (
                 <>

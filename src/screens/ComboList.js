@@ -65,6 +65,7 @@ const ComboList = ({ match }) => {
     successCreate,
     createdProduct,
     pageNumber,
+    error,
   ]);
 
   const deleteHandler = (id) => {

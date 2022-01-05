@@ -51,7 +51,7 @@ const RawmaterialList = ({ match }) => {
     }
 
     dispatch(listitems());
-  }, [dispatch, history, userInfo, successDelete]);
+  }, [dispatch, history, userInfo, successDelete, error]);
 
   const deleteHandler = (id) => {
     dispatch(deleteitem(id));
