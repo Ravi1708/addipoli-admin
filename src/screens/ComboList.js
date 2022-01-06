@@ -55,7 +55,6 @@ const ComboList = ({ match }) => {
     }
     if (error == "Forbidden resource") {
       dispatch(logout);
-      history.push("/login");
     }
   }, [
     dispatch,

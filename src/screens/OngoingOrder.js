@@ -50,7 +50,6 @@ const OngoingOrder = ({ match }) => {
     return () => clearInterval(interval);
     if (error == "Forbidden resource") {
       dispatch(logout);
-      history.push("/login");
     }
   }, [dispatch, history, userInfo]);
 

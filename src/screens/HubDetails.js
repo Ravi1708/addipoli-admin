@@ -47,7 +47,7 @@ const HubDetails = ({ match, history }) => {
   useEffect(() => {
     dispatch({ type: PRODUCT_CREATE_RESET });
     if (!userInfo) {
-      history.push("/login");
+      dispatch(logout);
     }
     // if (successCreate) {
     //   history.push(`/editproduct/${createdProduct._id}/edit`);
@@ -58,7 +58,6 @@ const HubDetails = ({ match, history }) => {
 
     if (error == "Forbidden resource") {
       dispatch(logout);
-      history.push("/login");
     }
   }, [
     dispatch,
