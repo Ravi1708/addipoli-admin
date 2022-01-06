@@ -26,10 +26,10 @@ const LoginScreen = ({ history }) => {
 
   useEffect(() => {
     if (userInfo) {
-      Redirect("/product");
+      Redirect("/ongoing");
+      // history.push("/ongoing");
     }
-  }, [history, userInfo]);
-  console.log(userInfo);
+  }, [dispatch, history, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -122,7 +122,7 @@ const LoginScreen = ({ history }) => {
                   Login
                 </button>
               </div>
-              
+
               {/* <!-- <div className="text-center p-t-136">
 						<a className="txt2" href="reg.php">
 							Create your Account
