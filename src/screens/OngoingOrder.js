@@ -61,9 +61,6 @@ const OngoingOrder = ({ match }) => {
     //   dispatch(listOngoingOrders());
     // }, 10000);
     return () => clearInterval(interval);
-    if (error == "Forbidden resource") {
-      dispatch(logout);
-    }
   }, [dispatch, history, userInfo]);
 
   useEffect(() => {
@@ -71,6 +68,12 @@ const OngoingOrder = ({ match }) => {
       prevOrderRef.current = orders;
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error == "Forbidden resource") {
+      dispatch(logout);
+    }
+  }, []);
 
   const deleteHandler = (id) => {
     // dispatch(deleteProduct(id));
