@@ -48,6 +48,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import LoginScreen from "./screens/LoginScreen";
 import ViewOngoingOrder from "./screens/ViewOngoingOrder";
+import NewOrders from "./screens/NewOrders";
 
 const App = () => {
   const userLogin = useSelector((state) => state.userLogin);
@@ -61,6 +62,7 @@ const App = () => {
         <>
           <Sidebar />
           <Switch>
+            {/* <Route path="/" component={NewOrders} /> */}
             <Route path="/customers" component={CustomerDetails} />
             <Route path="/customers" component={CustomerDetails} />
             <Route path="/viewcustomers" component={ViewCustomerDetails} />

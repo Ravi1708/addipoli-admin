@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { listOngoingOrders } from "../actions/orderActions";
 import Loader from "../components/Spinner";
@@ -15,14 +15,22 @@ import {
 } from "mdbreact";
 import { NavLink } from "react-router-dom";
 import { logout } from "../actions/userActions";
+import { Modal, Button } from "react-bootstrap";
+import Order from "../components/Order";
 
 const OngoingOrder = ({ match }) => {
-  let history = useHistory();
-  const pageNumber = match.params.pageNumber || 1;
-  const dispatch = useDispatch();
-
   const OngoingOrderList = useSelector((state) => state.OngoingOrderList);
   const { loading, orders, error } = OngoingOrderList;
+
+  const [show, setShow] = useState(orders ? true : false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  let history = useHistory();
+
+  const pageNumber = match.params.pageNumber || 1;
+  const dispatch = useDispatch();
 
   const productDelete = useSelector((state) => state.productDelete);
   const {
@@ -42,16 +50,27 @@ const OngoingOrder = ({ match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const prevOrderRef = useRef();
+
   useEffect(() => {
     dispatch(listOngoingOrders());
     const interval = setInterval(() => {
       dispatch(listOngoingOrders());
-    }, 60000);
+    }, 30000);
+    // const interval = setInterval(() => {
+    //   dispatch(listOngoingOrders());
+    // }, 10000);
     return () => clearInterval(interval);
     if (error == "Forbidden resource") {
       dispatch(logout);
     }
   }, [dispatch, history, userInfo]);
+
+  useEffect(() => {
+    if (orders) {
+      prevOrderRef.current = orders;
+    }
+  }, [dispatch]);
 
   const deleteHandler = (id) => {
     // dispatch(deleteProduct(id));
@@ -127,7 +146,6 @@ const OngoingOrder = ({ match }) => {
             return new Date(a.createdAt) - new Date(b.createdAt);
           })
           .map((order, index) => {
-            console.log(order);
             return {
               index: index + 1,
               orderId: order.orderId,
@@ -194,6 +212,25 @@ const OngoingOrder = ({ match }) => {
       : [],
   };
 
+  function filterNew(order) {
+    if (prevOrderRef.current.includes(order)) {
+      console.log(order);
+      return false;
+    }
+    console.log("flase");
+    return true;
+  }
+
+  const newOrders = orders?.filter(
+    // filterNew
+    (filteredorders) =>
+      new Date(filteredorders.createdAt).getDate() === new Date().getDate()
+  );
+
+  console.log(newOrders);
+
+  console.log(prevOrderRef);
+
   return (
     <div>
       <div className="skin-default fixed-layout">
@@ -217,6 +254,11 @@ const OngoingOrder = ({ match }) => {
                 </ol>
               </div>
             </div>
+
+            {newOrders?.map((order, index) => {
+              return <Order index={index} order={order} />;
+            })}
+
             {/* <!-- ============================================================== -->
                         <!-- End Bread crumb and right sidebar toggle -->
                         <!-- ============================================================== -->
